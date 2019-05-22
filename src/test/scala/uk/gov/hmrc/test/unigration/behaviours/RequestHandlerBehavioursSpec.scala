@@ -95,12 +95,12 @@ class RequestHandlerBehavioursSpec extends WordSpec with MustMatchers with Resul
 
     "add form body to routed request" in new RequestScenario(formBody = form) {
       behaviours.withRequestAndFormBody(method, uri, body = form) { _ =>
-        println(actualRequest.get.body.getClass)
+        actualRequest.get.body.asInstanceOf[AnyContentAsFormUrlEncoded].data must be(form.map(entry => entry._1 -> Seq(entry._2)))
       }
     }
 
     "delegate routing exceptions to error handler" in new RequestScenario() {
-
+      // TODO write exception handler scenario
     }
 
   }
