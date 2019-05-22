@@ -17,6 +17,7 @@ libraryDependencies ++= Seq(
   "uk.gov.hmrc" %% "jsoup-should-matchers" % "0.3.0",
   "org.scalatest" %% "scalatest" % "3.0.4",
   "org.mockito" %  "mockito-core" % "2.23.4",
+  "uk.gov.hmrc" %% "http-caching-client" % "8.4.0-play-25",
 
   // NB. make sure these are all kept in sync with play version
   "com.typesafe.play" %% "play" % current,
