@@ -53,6 +53,36 @@ class MyControllerSpec extends ControllerUnigrationSpec {
 In the above example, the `withRequest` test harness will route the given request and execute the test provided in the anonymous function which
 has access to the result.
 
+An example of testing an authenticated HTTP GET endpoint:
+
+```scala
+class MyControllerSpec extends ControllerUnigrationSpec with AuthenticationBehaviours {
+  
+  "GET /some-app-url" should {
+    
+    "return OK when user is signed in" in withSignedInUser(userFixture()) { (headers, session, tags) =>
+      withRequest("GET", "/some-app-url", headers = headers, session = session, tags = tags) { result =>
+        wasOk(result)
+      }
+    }
+    
+    "redirect user to login page when no signed in" in withoutSignedInUser() {
+      withRequest("GET", "/some-app-url", headers = headers, session = session, tags = tags) { result =>
+        wasRedirected(ggLoginRedirectUri("/some-app-url"), result)
+      }
+    }
+    
+  }
+  
+}
+```
+
+In the above example, the `withSignedInUser` test harness sets up the auth client and associated request properties in
+order to subsequently route a request that requires authentication. Alternatively, `withoutSignedInUser` sets up the
+auth client to return a failed future with a `NoActiveSession` exception.
+
+As it currently stands, the test harnesses provided by `AuthenticationBehaviours` are quite limited in how it expects
+the auth client to be used and could do with refinement to make it more general purpose.
 
 # License
 
