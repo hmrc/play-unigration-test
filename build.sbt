@@ -10,7 +10,7 @@ lazy val simpleReactiveMongo = Project(nameApp, file("."))
     resolvers += Resolver.jcenterRepo,
     makePublicallyAvailableOnBintray := true,
     majorVersion := 0
-  ).settings(scoverageSettings)
+  )
 
 libraryDependencies ++= Seq(
   "uk.gov.hmrc" %% "jsoup-should-matchers" % "0.3.0",
@@ -24,13 +24,4 @@ libraryDependencies ++= Seq(
 
   "org.pegdown" % "pegdown" % "1.6.0" % "test",
   "uk.gov.hmrc" %% "emailaddress" % "3.2.0" % "test"
-)
-
-lazy val scoverageSettings: Seq[Setting[_]] = Seq(
-  coverageEnabled := true,
-  coverageExcludedPackages := List("<empty>").mkString(";"),
-  coverageMinimum := 80,
-  coverageFailOnMinimum := true,
-  coverageHighlighting := true,
-  parallelExecution in Test := false
 )
