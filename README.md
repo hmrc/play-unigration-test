@@ -67,7 +67,7 @@ class MyControllerSpec extends ControllerUnigrationSpec with AuthenticationBehav
     }
     
     "redirect user to login page when no signed in" in withoutSignedInUser() {
-      withRequest("GET", "/some-app-url", headers = headers, session = session, tags = tags) { result =>
+      withRequest("GET", "/some-app-url") { result =>
         wasRedirected(ggLoginRedirectUri("/some-app-url"), result)
       }
     }
