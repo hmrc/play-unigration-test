@@ -8,7 +8,7 @@ lazy val simpleReactiveMongo = Project(nameApp, file("."))
   .settings(
     scalaVersion := "2.11.12",
     resolvers += Resolver.jcenterRepo,
-    makePublicallyAvailableOnBintray := true,
+//    makePublicallyAvailableOnBintray := true,
     majorVersion := 0
   )
 
