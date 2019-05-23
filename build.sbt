@@ -13,7 +13,7 @@ lazy val simpleReactiveMongo = Project(nameApp, file("."))
   )
 
 libraryDependencies ++= Seq(
-  "uk.gov.hmrc" %% "bootstrap-play-25" % "4.11.0",
+  "uk.gov.hmrc" %% "bootstrap-play-25" % "4.12.0",
   "uk.gov.hmrc" %% "jsoup-should-matchers" % "0.3.0",
   "org.scalatest" %% "scalatest" % "3.0.4",
   "org.mockito" %  "mockito-core" % "2.23.4",
