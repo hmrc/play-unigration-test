@@ -32,7 +32,7 @@ trait RequestHandlerBehaviours extends UnigrationBase {
 
   val errorHandler: HttpErrorHandler = component[HttpErrorHandler]
 
-  val contextPath: String = "/professional-bodies"
+  val contextPath: String = ""
 
   val GET: String = "GET"
 
