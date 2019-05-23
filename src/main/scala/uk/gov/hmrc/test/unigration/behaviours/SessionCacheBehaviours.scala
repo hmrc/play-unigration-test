@@ -29,12 +29,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SessionCacheBehaviours extends UnigrationBase {
 
-  lazy val sessionCache: SessionCache = new MockSessionCache
+  private [behaviours] lazy val sessionCache: SessionCache = new MockSessionCache
 
-  def withSessionCache[A](formId: String, body: A)(test: CacheMap => Unit)
+  def withSessionCache()(test: SessionCache => Unit): Unit = {
+    test(sessionCache)
+  }
+
+  def withSessionCache[A](formId: String, body: A)(test: SessionCache => Unit)
                          (implicit wts: Writes[A], hc: HeaderCarrier): Unit = {
-    whenReady(sessionCache.cache(formId, body)) { cacheMap =>
-      test(cacheMap)
+    whenReady(sessionCache.cache(formId, body)) { _ =>
+      test(sessionCache)
     }
   }
 

@@ -94,7 +94,7 @@ class MyControllerSpec extends ControllerUnigrationSpec with AuthenticationBehav
   "GET /some-app-url" should {
   
     "display session cache data in" in in withSignedInUser(userFixture()) { (_, _, _) => 
-      withSessionCache[MyJsonCaseClass]("someForm", MyJsonCaseClass("foo")) { cacheMap =>
+      withSessionCache[MyJsonCaseClass]("someForm", MyJsonCaseClass("foo")) { sessionCache =>
         withRequest("GET", "/some-app-url") { result =>
           includesHtmlTag(result, "h1", "foo")
         }

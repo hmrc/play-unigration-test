@@ -18,17 +18,26 @@ package uk.gov.hmrc.test.unigration.behaviours
 
 import java.util.UUID
 
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{MustMatchers, WordSpec}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
 
-class SessionCacheBehavioursSpec extends WordSpec with MustMatchers {
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class SessionCacheBehavioursSpec extends WordSpec with MustMatchers with ScalaFutures {
 
   "with session cache" should {
 
+    "provide access to session cache for tests" in new CachingScenario {
+      behaviours.withSessionCache() { cache =>
+        cache must be(behaviours.sessionCache)
+      }
+    }
+
     "add given data to session cache" in new CachingScenario {
       behaviours.withSessionCache[Map[String, String]](form, data) { cache =>
-        cache.getEntry[Map[String, String]](form) must be(Some(data))
+        cache.fetchAndGetEntry[Map[String, String]](form).futureValue must be(Some(data))
       }
     }
 
