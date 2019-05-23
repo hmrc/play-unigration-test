@@ -27,7 +27,7 @@ import uk.gov.hmrc.test.unigration.UnigrationBase
 import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
 
-class SessionCacheBehaviours extends UnigrationBase {
+trait SessionCacheBehaviours extends UnigrationBase {
 
   private [behaviours] lazy val sessionCache: SessionCache = new MockSessionCache
 
