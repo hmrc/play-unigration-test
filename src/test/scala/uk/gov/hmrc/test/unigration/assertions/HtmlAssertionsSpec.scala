@@ -118,19 +118,19 @@ class HtmlAssertionsSpec extends WordSpec with HtmlAssertions with Results {
   "includes form" should {
 
     "match result that contains GET form with given action" in {
-      includeForm(htmlResult, action)
+      includesForm(htmlResult, action)
     }
 
     "match result that contains form with given action and method" in {
-      includeForm(htmlResult, action, HttpVerbs.POST)
+      includesForm(htmlResult, action, HttpVerbs.POST)
     }
 
     "not match result that contains form with non-matching method" in {
-      a[TestFailedException] must be thrownBy includeForm(htmlResult, action, HttpVerbs.PUT)
+      a[TestFailedException] must be thrownBy includesForm(htmlResult, action, HttpVerbs.PUT)
     }
 
     "not match result that contains form with non-matching action" in {
-      a[TestFailedException] must be thrownBy includeForm(htmlResult, Call("POST", "/bar"), HttpVerbs.POST)
+      a[TestFailedException] must be thrownBy includesForm(htmlResult, Call("POST", "/bar"), HttpVerbs.POST)
     }
 
   }
@@ -138,23 +138,23 @@ class HtmlAssertionsSpec extends WordSpec with HtmlAssertions with Results {
   "includes HTML tag" should {
 
     "match result that contains tag by text content" in {
-      includeHtmlTag(htmlResult, "p", "Click me")
+      includesHtmlTag(htmlResult, "p", "Click me")
     }
 
     "not match result that does not contain tag with text content" in {
-      a[TestFailedException] must be thrownBy includeHtmlTag(htmlResult, "p", "This is not in the result")
+      a[TestFailedException] must be thrownBy includesHtmlTag(htmlResult, "p", "This is not in the result")
     }
 
     "match result that contains tag with text content and attribute value" in {
-      includeHtmlTagWithAttribute(htmlResult, "p", "class", className)
+      includesHtmlTagWithAttribute(htmlResult, "p", "class", className)
     }
 
     "not match result that contains tag with text content but not attribute of given name" in {
-      a[TestFailedException] must be thrownBy includeHtmlTagWithAttribute(htmlResult, "p", "id", className)
+      a[TestFailedException] must be thrownBy includesHtmlTagWithAttribute(htmlResult, "p", "id", className)
     }
 
     "not match result that contains tag with text content but not given attribute value" in {
-      a[TestFailedException] must be thrownBy includeHtmlTagWithAttribute(htmlResult, "p", "class", "not-the-class-name")
+      a[TestFailedException] must be thrownBy includesHtmlTagWithAttribute(htmlResult, "p", "class", "not-the-class-name")
     }
 
   }

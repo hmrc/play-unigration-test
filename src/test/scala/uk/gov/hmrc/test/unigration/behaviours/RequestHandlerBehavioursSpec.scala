@@ -99,8 +99,12 @@ class RequestHandlerBehavioursSpec extends WordSpec with MustMatchers with Resul
       }
     }
 
-    "delegate routing exceptions to error handler" in new RequestScenario() {
-      // TODO write exception handler scenario
+    "delegate routing exceptions to error handler" in new RequestScenario(result = InternalServerError, maybeException = Some(exception)) {
+      behaviours.withRequestAndFormBody(method, uri, body = form) { res =>
+        status(res) must be(INTERNAL_SERVER_ERROR)
+        serverError must be(true)
+        thrownException.get must be(exception)
+      }
     }
 
   }

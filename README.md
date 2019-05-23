@@ -1,6 +1,8 @@
 
 # Play Unigration Test
 
+[![Download](https://api.bintray.com/packages/hmrc/releases/play-unigration-test/images/download.svg)](https://bintray.com/hmrc/releases/play-unigration-test/_latestVersion)
+
 "Unigration testing" is a term I picked up from [Richard Beton](https://www.bigbeeconsultants.uk/). Although he makes no claims to having invented
 the term, I don't know its original inventor so credit it to him here.
 
@@ -83,6 +85,29 @@ auth client to return a failed future with a `NoActiveSession` exception.
 
 As it currently stands, the test harnesses provided by `AuthenticationBehaviours` are quite limited in how it expects
 the auth client to be used and could do with refinement to make it more general purpose.
+
+An example of testing an endpoint that depends on session cache data:
+
+```scala
+class MyControllerSpec extends ControllerUnigrationSpec with AuthenticationBehaviours with SessionCacheBehaviours {
+
+  "GET /some-app-url" should {
+  
+    "display session cache data in" in in withSignedInUser(userFixture()) { (_, _, _) => 
+      withSessionCache[MyJsonCaseClass]("someForm", MyJsonCaseClass("foo")) { cacheMap =>
+        withRequest("GET", "/some-app-url") { result =>
+          includesHtmlTag(result, "h1", "foo")
+        }
+      }
+    }
+  
+  }
+
+}
+```
+
+In the above example, the `withSessionCache` test harness sets up the given data in a mock cache implementation that has
+been bound to the `SessionCache` type in the running Guice app.
 
 # License
 

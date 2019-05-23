@@ -45,15 +45,15 @@ trait HtmlAssertions extends UnigrationAssertions with JsoupShouldMatchers {
     contentAsHtml(in) should include element withName("a").
       withAttrValue("href", href)
 
-  def includeForm(in: Future[Result], action: Call, method: String = HttpVerbs.GET): Unit =
+  def includesForm(in: Future[Result], action: Call, method: String = HttpVerbs.GET): Unit =
     contentAsHtml(in) should include element withName("form").
       withAttrValue("action", action.url).
       withAttrValue("method", method)
 
-  def includeHtmlTag(in: Future[Result], name: String, value: String): Unit =
+  def includesHtmlTag(in: Future[Result], name: String, value: String): Unit =
     contentAsHtml(in) should include element withName(name).withValue(value)
 
-  def includeHtmlTagWithAttribute(in: Future[Result], tagName: String, attributeName: String, attributeValue: String): Unit =
+  def includesHtmlTagWithAttribute(in: Future[Result], tagName: String, attributeName: String, attributeValue: String): Unit =
     contentAsHtml(in) should include element withName(tagName)
       .withAttrValue(attributeName, attributeValue)
 
