@@ -31,7 +31,7 @@ import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.auth.core.{AuthConnector, NoActiveSession}
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, NoActiveSession}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.bootstrap.config.AppName
 import uk.gov.hmrc.test.unigration.{UnigrationBase, UnigrationFixtures, UserFixture}
@@ -66,7 +66,7 @@ trait AuthenticationBehaviours extends UnigrationBase with UnigrationFixtures wi
 
   //noinspection ConvertExpressionToSAM
   private def enrolmentsMatcher(user: UserFixture): ArgumentMatcher[Predicate] = new ArgumentMatcher[Predicate] {
-    override def matches(p: Predicate): Boolean = user.enrolments.enrolments.exists(_ == p)
+    override def matches(p: Predicate): Boolean = user.enrolments.enrolments.map(enrolment => Enrolment(enrolment.key)).exists(_ == p)
   }
 
   def withSignedInUser(user: UserFixture = randomUser)(test: (Map[String, String], Map[String, String], Map[String, String]) => Unit): Unit = {
