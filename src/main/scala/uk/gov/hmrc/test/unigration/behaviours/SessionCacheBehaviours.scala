@@ -19,7 +19,7 @@ package uk.gov.hmrc.test.unigration.behaviours
 import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{Json, Writes}
+import play.api.libs.json.{Json, Reads, Writes}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.test.unigration.UnigrationBase
@@ -50,6 +50,8 @@ class MockSessionCache extends SessionCache {
 
   val cache: mutable.Map[String, CacheMap] = mutable.Map()
 
+  val cacheId: String = "mockSessionCacheId" // TODO find a way to pass through user's SessionId via HeaderCarrier from AuthenticationBehaviours
+
   override def defaultSource: String = "mockSessionCache"
 
   override def baseUri: String = "mockSessionCache"
@@ -58,22 +60,35 @@ class MockSessionCache extends SessionCache {
 
   override def http: CoreGet with CorePut with CoreDelete = NoopHttpClient // ensure we throw on any attempted HTTP call
 
+  override def cache[A](formId: String, body: A)
+                       (implicit wts: Writes[A], hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] =
+    cache(defaultSource, cacheId, formId, body)
+
   // we ignore "source" for purposes of mocking
   override def cache[A](source: String, cacheId: String, formId: String, body: A)
                        (implicit wts: Writes[A], hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
-    val entry = CacheMap(cacheId, Map(formId -> Json.toJson(body)))
+    val current = cache.get(cacheId).map(_.data).getOrElse(Map.empty)
+    val entry = CacheMap(cacheId, current ++ Map(formId -> Json.toJson(body)))
     cache += (cacheId -> entry)
     Future.successful(entry)
   }
+
+  override def fetch()
+           (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[CacheMap]] =
+    fetch(defaultSource, cacheId)
 
   override def fetch(source: String, cacheId: String)
                     (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[CacheMap]] = {
     Future.successful(cache.get(cacheId))
   }
 
+  override def fetchAndGetEntry[T](key: String)
+                                  (implicit hc: HeaderCarrier, rds: Reads[T], executionContext: ExecutionContext): Future[Option[T]] =
+    fetchAndGetEntry(defaultSource, cacheId, key)
+
   override def remove()
                      (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
-    cache -= hc.sessionId.get.value
+    cache -= cacheId
     Future.successful(HttpResponse(Status.ACCEPTED)) // TODO check what status keystore actually returns
   }
 
